@@ -344,6 +344,8 @@ def do_train_fed(
                     if not pytorch_1_1_0_or_later:
                         scheduler["gnet"].step()
                         scheduler["pnet"].step()
+                        if cidx == len(models) - 1:
+                            scheduler["attnet"].step()
                     images = images.to(device)
                     targets = [target.to(device) for target in targets]
 
@@ -383,13 +385,19 @@ def do_train_fed(
                     
                     optimizer["gnet"].zero_grad()
                     optimizer["pnet"].zero_grad()
+                    if cidx == len(models) - 1:
+                        optimizer["attnet"].zero_grad()
                     losses_total.backward()
                     optimizer["gnet"].step()
                     optimizer["pnet"].step()
+                    if cidx == len(models) - 1:
+                        optimizer["attnet"].step()
 
                     if pytorch_1_1_0_or_later:
                         scheduler["gnet"].step()
                         scheduler["pnet"].step()
+                        if cidx == len(models) - 1:
+                            scheduler["attnet"].step()
 
                     batch_time = time.time() - end
                     end = time.time()
