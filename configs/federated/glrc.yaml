@@ -1,0 +1,31 @@
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+  WEIGHT: "../pretrained_models/R-101.pkl"
+  RPN_ONLY: True
+  FCOS_ON: True
+  BACKBONE:
+    CONV_BODY: "R-101-FPN-RETINANET"
+  RESNETS:
+    BACKBONE_OUT_CHANNELS: 256
+  RETINANET:
+    USE_C5: False # FCOS uses P5 instead of C5
+  FCOS:
+    NUM_CLASSES: 3
+DATASETS:
+  TRAIN: ("client0_glrc_federated_train","client1_glrc_federated_train","client2_glrc_federated_train","client3_glrc_federated_train",)
+  TEST: ("client0_glrc_federated_test","client1_glrc_federated_test","client2_glrc_federated_test","client3_glrc_federated_test",)
+INPUT:
+  MIN_SIZE_TRAIN: (468, 500, 512, 600, 712, 800)
+  MAX_SIZE_TRAIN: 1333
+  MIN_SIZE_TEST: 800
+  MAX_SIZE_TEST: 1333
+DATALOADER:
+  SIZE_DIVISIBILITY: 32
+SOLVER:
+  BASE_LR: 0.0001
+  STEPS: (50000000,)
+  WARMUP_ITERS: 0
+  WEIGHT_DECAY: 0.0001
+  IMS_PER_BATCH: 2
+  ###
+  CONNECT_METHOD: 'fedavg'
